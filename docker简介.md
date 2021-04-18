@@ -3,8 +3,11 @@
 ## 1. Docker架构
 
 - 进程
+
 计算机中的程序关于某数据集合上的一次运行活动。
+
 - 宿主(host)
+
 相对于虚拟机而言，正在使用的计算机就是宿主机。
 
 ![Docker 架构](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/media/docker-on-linux.png)
@@ -18,11 +21,17 @@
 ## 2. 与传统虚拟化方式的对比
 
 - Server：运行软件的计算机
+
 - Host OS：宿主机的操作系统
+
 - Hypervisor
+
 虚拟机监视器(virtual machine monitor, VMM), 用来建立与执行虚拟机器的软件、固件或硬件
+
 - 虚拟机
+
 通过软件模拟的具有完整硬件系统功能的、运行在一个完全隔离环境中的完整计算机系统。
+
 - 虚拟化的仓库(repository)
 
 ![传统虚拟化](https://vuepress.mirror.docker-practice.com/assets/img/virtualization.bfc621ce.png)
@@ -34,12 +43,19 @@
 ## 3. Docker三大基本概念
 
 - 操作系统分为内核空间和用户空间
+
 - 挂载(mounting)
+
 是指由操作系统使一个存储设备(诸如硬盘、CD-ROM或共享资源)上的计算机文件和目录可供用户通过计算机的文件系统访问的一个过程。
+
 - root文件系统
+
 根文件系统首先是内核启动时所mount的第一个文件系统，内核代码映像文件保存在根文件系统中，而系统引导启动程序会在根文件系统挂载之后从中把一些基本的初始化脚本和服务等加载到内存中去运行。
+
 - Linux内核启动后，会挂载root文件系统为其提供用户空间支持
+
 - docker daemon(守护神)
+
 服务器组件，以 Linux 后台服务的方式运行，是 Docker 最核心的后台进程，我们也把它称为守护进程。它负责响应来自 Docker Client 的请求，然后将这些请求翻译成系统调用完成容器管理操作。
 
 
