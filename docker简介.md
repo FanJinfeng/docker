@@ -306,3 +306,141 @@ $ docker pause xxx
  $ docker -f container rm xxx
  ```
  
+删除所有处于终止状态的容器
+
+```s
+$ docker container prune
+```
+
+删除所有已经退出的容器
+
+```s
+$ docker rm -v $(docker ps -aq -f status=exited)
+```
+
+### (9) 导出容器
+
+导出容器快照到本地文件
+
+```s
+$ docker export xxx > ubuntu.tar
+```
+
+### (10) 导入容器快照
+
+从容器快照文件中再导入为镜像
+
+```s
+cat ubuntu.tar | docker import  - test/ubuntu:v1.0
+```
+
+
+
+# 3. 数据管理
+
+## 3.1 数据卷
+
+一个可供一个或多个容器使用的特殊目录
+
+- 数据卷可以在容器之间共享和重用
+- 对数据卷的修改会立马生效
+- 对数据卷的更新不会影响镜像
+- 数据卷默认会一直存在，即使容器被删除
+
+### (1) 创建一个数据卷
+
+```s
+$ docker volumn create datawhale
+```
+
+查看所有的数据卷
+
+```s
+$ docker volumn ls
+```
+
+查看指定数据卷的信息
+
+```s
+$ docker volumn inspect datawhale
+```
+
+### (2) 启动一个挂载数据卷的容器
+
+在 docker run 的时候，使用 --mount 来将数据卷挂载到容器里，可以挂载多个数据卷
+
+创建名为web的容器，并加载一个数据卷到容器
+ 
+```s
+$ docker run -d -P \
+    --name web \
+    --mount source=datawhale,target=/usr/share/nginx/html \
+    nginx:alpine
+```
+
+- source: 数据卷
+- traget: 容器内文件系统挂载点
+
+可以不需要提前创建数据卷，直接在运行容器的时候mount，这是如果不存在指定的数据卷，docker会自动创建。
+
+当数据卷为空时，镜像中被指定为挂载点的目录中的文件会复制到数据卷中。
+
+### (3) 查看数据见的具体信息
+
+```s
+$ docker inspect web
+```
+
+### (4) 删除数据卷
+
+```s
+$ docker volumn rm datawhale
+```
+
+删除容器的同时移除数据卷
+
+```s
+$ docker rm -v xxx
+```
+
+清理无主的数据卷
+
+```s
+$ docker volumn prune
+```
+
+## 3.2 挂载主机目录
+
+### (1) 挂载一个主机目录作为数据卷
+
+加载主机的 /src/webapp 目录到容器的 /usr/share/ngnix/html 目录
+
+```s
+$ docker run -d -P \
+    --name web \
+    --mount type=bind,source=/src/webapp,target/usr/share/nginx/html \
+    ngnix:alpine
+```
+
+- docker挂载主机目录的默认权限是读写
+- 如果挂载的主机目录不存在，创建容器时，docker不会自动创建，此时会报错
+
+加载主机目录，权限为只读
+
+```s
+$ docker run -d -P \
+    --name web \
+    --mount type=bind,source=/src/webapp,target/usr/share/nginx/html,readonly \
+    ngnix:alpine
+```
+
+### (2) 挂载一个本地主机文件作为数据卷
+
+```s
+$ docker run --rm -it \
+    --mount type=bind,source=$HOME/.bash_history,target=/root/.bash_history \
+    ubuntu:18.04 \
+    bash
+```
+
+
