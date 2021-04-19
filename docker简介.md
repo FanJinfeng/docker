@@ -108,3 +108,41 @@ Docker 官方提供了 Docker Registry 镜像，可以直接使用做为私有 R
 # 2. Docker 镜像与容器
 
 ## 2.1 Docker 镜像
+
+### (1) 获取镜像
+
+```s
+$ docker pull --help
+```
+
+```s
+$ docker pull [OPTIONS] [ADDRESS/]NAME[:TAG]
+```
+
+- ADDRESS: Docker镜像仓库地址，格式一般是 <域名/IP>[:端口号]。默认地址是 Docker Hub 的地址docker.io。
+
+- NAME：仓库名，格式一般是<用户名>/<软件名>。对于 Docker Hub，如果不给出用户名，则默认为 library，也就是官方镜像。
+
+```s
+$ docker pull docker.io/library/ubuntu:18.04
+$ docker pull ubuntu:18.04
+```
+
+从下载过程中可以看到我们之前提及的分层存储的概念，镜像是由多层存储所构成。下载也是一层层的去下载，并非单一文件。下载过程中给出了每一层的 ID 的前 12 位。并且下载结束后，给出该镜像完整的 `sha256` 的摘要，以确保下载一致性。
+
+### (2) 列出镜像
+
+### (3) 删除本地镜像
+
+### (4) Dockfile构建镜像
+
+### (5) 跨平台构建镜像
+
+### (6) 镜像存储位置
+
+
+
+
+
+
+
