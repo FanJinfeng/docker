@@ -132,9 +132,81 @@ $ docker pull ubuntu:18.04
 
 ### (2) 列出镜像
 
+```s
+$ docker image ls
+```
+
+- repository 仓库名
+- tag 标签
+- image id 镜像id
+- ctrated 创建时间
+- size 所占空间
+
+镜像的唯一标识是器id和摘要，一个镜像可以有多个标签
+
 ### (3) 删除本地镜像
 
-### (4) Dockfile构建镜像
+```s
+$ docker image rm xx1 xx2 
+```
+
+可是使用镜像短id, 镜像长id, 镜像名, 镜像摘要来删除镜像
+
+- 短id, 一般取长id的前3个字符以上，只要可以区别于别的镜像即可
+- 镜像名, `<仓库名>:<标签>`
+- 镜像摘要
+
+```s
+$ docker image ls --digests
+$ docker image rm node@sha256:xxxxxx
+```
+
+删除行为分为两类, 一类是untagged, 另一类是deleted
+
+- untagged: 使用上述命令删除镜像, 实际上是在要求删除某个标签的镜像, 首先需要将镜像的标签取消
+- deleted: 如果只有一个标签指向镜像, 且没有其他镜像和容器依赖, 则会执行删除镜像的行为
+
+配合 docker image ls命令批量删除镜像
+
+- 删除所有仓库名为redis的镜像
+
+```s
+$ docker image rm $(docker image ls -q redis)
+```
+
+- 删除所有在mongo:3.2之前的镜像
+
+```s
+$ docker image rm $(docker image ls -1 -f before=mongo:3.2)
+```
+
+### (4) Dockfile制作镜像
+
+Step1: Dockerfile是一个文本文件，包含一条条的指令，每一条指令构建一层
+
+```s
+FROM nginx
+RUN echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
+```
+
+- FROM 指定基础镜像
+
+在一个Dockerfile中，FROM是必备的指令，并且必须是第一条指令。Docker Hub上有可以直接拿来使用的服务类的镜像，也有更为基础的操作系统镜像。FROM scratch 表示基于一个空白的镜像。
+
+- RUN 执行命令
+
+shell格式：RUN <命令>
+
+exec格式：RUN ["可执行文件", "参数1", "参数2"]
+
+Step2: 在Dockerfile文件所在目录创建镜像
+
+```s
+$ docker build -t nginx:v3 .
+```
+
+- .指定上下文路径
+
 
 ### (5) 跨平台构建镜像
 
@@ -142,7 +214,95 @@ $ docker pull ubuntu:18.04
 
 
 
+## 2.2 docker 容器
 
+### (1) 新建并启动容器
 
+输出 hello world, 之后终止容器
 
+```s
+$ docker run ubuntu:18.04 /bin/eche 'Hello world'
+```
 
+启动bash终端, 允许用户进行交互
+
+```s
+$ docker run -t -i ubuntu:18.04 /bin/bash
+```
+
+- -t 让 docker 分配一个伪终端并绑定到容器的标准输入上
+- -i 让容器的标准输入保持打开
+
+### (2) 启动已终止容器
+
+```s
+$ docker container start xxx
+```
+
+### (3) 停止容器
+
+```s
+$ docker stop xxx
+```
+
+### (4) 重启容器
+
+```s
+$ docker restart xxx
+```
+### (5) 后台运行程序
+
+希望在docker后台运行程序而不是直接把执行命令的结果输出在当前宿主机下。
+
+```s
+$ docker run -d ununtu:18.04 /bin/sh -c "while true; do echo hello world; sleep 1; done"
+```
+
+查看容器信息
+
+```s
+$ docker container ls
+```
+
+获取容器输出信息
+
+```s
+$ docker container logs
+```
+
+### (6) 进入容器
+
+只使用 -i 参数，由于没有分配伪终端，姐买你没有Linux命令提示符
+
+```s
+$ docker exec -i 69d1 bash
+```
+
+当 -i -t 参数一起使用时，可以看到Linux命令提示符
+
+```s
+$ docker exec -it 691d bash
+```
+
+### (7) 暂停容器
+
+希望让容器暂停工作一段时间
+
+```s
+$ docker pause xxx
+```
+
+### (8) 删除容器
+ 
+ 删除处于终止状态的容器
+ 
+ ```s
+ $ docker container rm xxx
+ ```
+ 
+ 删除一个运行中的容器
+ 
+ ```s
+ $ docker -f container rm xxx
+ ```
+ 
