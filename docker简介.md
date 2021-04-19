@@ -418,7 +418,7 @@ $ docker volumn prune
 ```s
 $ docker run -d -P \
     --name web \
-    --mount type=bind,source=/src/webapp,target/usr/share/nginx/html \
+    --mount type=bind,source=/src/webapp,target=/usr/share/nginx/html \
     ngnix:alpine
 ```
 
@@ -430,7 +430,7 @@ $ docker run -d -P \
 ```s
 $ docker run -d -P \
     --name web \
-    --mount type=bind,source=/src/webapp,target/usr/share/nginx/html,readonly \
+    --mount type=bind,source=/src/webapp,target=/usr/share/nginx/html,readonly \
     ngnix:alpine
 ```
 
